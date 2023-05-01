@@ -1,0 +1,113 @@
+#!/usr/bin/env php
+<?php
+
+use Doctrine\DBAL\DriverManager;
+use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\ORMSetup;
+use Itis6120\Project2\Processor\ChoiceProcessor;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Helper\Table;
+use Symfony\Component\Console\Helper\TableCell;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Question\ChoiceQuestion;
+use Symfony\Component\Console\Question\Question;
+use Symfony\Component\Console\SingleCommandApplication;
+
+require __DIR__ . '/vendor/autoload.php';
+
+$application = new SingleCommandApplication;
+$application
+    ->setName('ITIS 6120: Project 2')
+    ->setVersion('2.0.0')
+    ->setHelp('The text-based UI for Project 2')
+    ->addOption('database', 'd', InputOption::VALUE_OPTIONAL, 'The name of the database', 'project1')
+    ->addOption('host', 't', InputOption::VALUE_OPTIONAL, 'The hostname of the database', '127.0.0.1')
+    ->addOption('port', 'r', InputOption::VALUE_OPTIONAL, 'The port for connecting to host', 3306)
+    ->addOption('username', 'u', InputOption::VALUE_OPTIONAL, 'The username used for connection', 'root')
+    ->addOption('password', 'p', InputOption::VALUE_NONE, 'Prompt for the password used for connection')
+    ->setCode(static function (InputInterface $input, OutputInterface $output) use ($application) {
+        $password = ''; // Default password is blank
+
+        $helper = $application->getHelper('question');
+
+        // The user requested to prompt for a password input
+        if ($input->getOption('password')) {
+            $prompt = new Question('Password: ', false);
+            $prompt
+                ->setMultiline(false)
+                ->setHidden(true);
+
+            $password = $helper->ask($input, $output, $prompt);
+        }
+
+        $config = ORMSetup::createAttributeMetadataConfiguration(['./src/Entity'], true);
+        $connection = DriverManager::getConnection([
+            'driver' => 'pdo_mysql',
+            'user' => $input->getOption('username'),
+            'password' => $password,
+            'dbname' => $input->getOption('database'),
+            'host' => $input->getOption('host'),
+            'port' => $input->getOption('port'),
+        ], $config);
+
+        $processor = new ChoiceProcessor(new EntityManager($connection, $config), $input, $output, $helper);
+        $section = $output->section();
+
+        while (true) {
+            $section->clear();
+
+            // Present the user with their choices
+            $prompt = new ChoiceQuestion('Please select from the following list of actions:', array_merge(
+                $processor->getChoices(),
+                ['Exit'],
+            ));
+            $prompt->setTrimmable(true);
+
+            $choice = $helper->ask($input, $section, $prompt);
+
+            if ($choice === 'Exit') {
+                $section->clear();
+                $output->writeln('Goodbye!');
+                break;
+            }
+            $results = $processor->process($choice);
+
+            $table = new Table($section);
+            $table
+                ->setHeaderTitle($choice)
+                ->setFooterTitle(sprintf('Total: %s', number_format($results['count'])))
+                ->setHeaders($results['headers'])
+                ->addRows($results['rows'])
+                ->setVertical();
+
+            if ($results['count'] === 0) {
+                $table->addRow([new TableCell('No records match your search at this time.', ['colspan' => count($results['headers'])])]);
+            }
+
+            // Set max column width to force wrapping long text.
+            for ($i = 0, $j = count($results['headers']); $i < $j; ++$i) {
+                $table->setColumnMaxWidth($i, 80);
+            }
+
+            $section->clear();
+            $table->render();
+
+            $prompt = new Question('Press Enter to start over, or Q to quit...');
+            $prompt
+                ->setTrimmable(true)
+                ->setMultiline(false)
+                ->setHidden(true);
+
+            $response = $helper->ask($input, $section, $prompt);
+
+            if (strtolower((string)$response) === 'q') {
+                $section->clear();
+                $output->writeln('Goodbye!');
+                break;
+            }
+        }
+
+        return Command::SUCCESS;
+    })->run();
