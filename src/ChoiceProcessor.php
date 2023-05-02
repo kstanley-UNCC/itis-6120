@@ -7,6 +7,7 @@ use Itis6120\Project2\Entity\AbstractEntity;
 use Itis6120\Project2\Processor\AdmittedByDoctor;
 use Itis6120\Project2\Processor\AdmittedByFacility;
 use Itis6120\Project2\Processor\AdmittedToday;
+use Itis6120\Project2\Processor\InsertNewPatient;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -54,6 +55,7 @@ final readonly class ChoiceProcessor
                 $processor = new AdmittedByDoctor($this);
                 break;
             case self::CHOICE_NEW_PATIENT:
+                $processor = new InsertNewPatient($this);
                 break;
             case self::CHOICE_NEW_STAFFER:
                 break;
