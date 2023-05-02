@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping\Table;
 
 #[Entity]
 #[Table(name: "staff_positions")]
-class StaffPosition
+class StaffPosition extends AbstractEntity
 {
     #[Column(name: "id", type: "integer")]
     #[Id]
