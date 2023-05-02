@@ -2,6 +2,7 @@
 
 namespace Itis6120\Project2\Processor;
 
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 use Doctrine\ORM\Exception\NotSupported;
 use Doctrine\Persistence\ObjectRepository;
@@ -33,6 +34,11 @@ abstract readonly class AbstractProcessor implements ProcessorInterface
     public function getEntityClass(): string
     {
         return $this->getRepository()->createResultSetMappingBuilder('class')->getClassName('class');
+    }
+
+    public function getEntityManager(): EntityManager
+    {
+        return $this->visitor->em;
     }
 
     public function getHelper(): HelperInterface
