@@ -18,6 +18,11 @@ abstract readonly class AbstractProcessor implements ProcessorInterface
     {
     }
 
+    public function askQuestion(Question $question): mixed
+    {
+        return $this->getHelper()->ask($this->getInput(), $this->getOutput(), $question);
+    }
+
     public function autocomplete(string $label, array $choices): mixed
     {
         $question = new Question(sprintf('%s (↑/↓): ', $label));
@@ -28,7 +33,7 @@ abstract readonly class AbstractProcessor implements ProcessorInterface
                 return array_values(array_filter($choices, static fn(string $choice): bool => str_starts_with($choice, $input)));
             });
 
-        return $this->getHelper()->ask($this->getInput(), $this->getOutput(), $question);
+        return $this->askQuestion($question);
     }
 
     public function getEntityClass(): string
