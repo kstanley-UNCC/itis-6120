@@ -63,8 +63,8 @@ $application
             return Command::FAILURE;
         }
 
-        $processor = new ChoiceProcessor(new EntityManager($connection, $config), $input, $output, $helper);
         $section = $output->section();
+        $processor = new ChoiceProcessor(new EntityManager($connection, $config), $input, $section, $helper);
 
         while (true) {
             $section->clear();
