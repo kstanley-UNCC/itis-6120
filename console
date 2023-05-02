@@ -52,6 +52,17 @@ $application
             'port' => $input->getOption('port'),
         ], $config);
 
+        try {
+            $connection->connect();
+        } catch (Exception $e) {
+            if ($output->isVeryVerbose()) {
+                $output->writeln(sprintf('<error>Exception</error> Unhandled %s exception caught from %s on line %d: %s', get_class($e), $e->getFile(), $e->getLine(), $e->getMessage()));
+            }
+
+            $output->writeln('<error>Error</error> Unable to connect to database. Use <info>-vvv</info> for more information.');
+            return Command::FAILURE;
+        }
+
         $processor = new ChoiceProcessor(new EntityManager($connection, $config), $input, $output, $helper);
         $section = $output->section();
 
