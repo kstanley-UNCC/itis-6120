@@ -4,7 +4,7 @@
 use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
-use Itis6120\Project2\Processor\ChoiceProcessor;
+use Itis6120\Project2\ChoiceProcessor;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
