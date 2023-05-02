@@ -5,6 +5,7 @@ namespace Itis6120\Project2\Entity;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\JoinColumn;
 use Doctrine\ORM\Mapping\ManyToOne;
@@ -16,6 +17,7 @@ class PatientVisit
 {
     #[Column(name: "id", type: "integer")]
     #[Id]
+    #[GeneratedValue]
     private int $id;
 
     #[ManyToOne(targetEntity: Patient::class, cascade: ["persist"], fetch: "EXTRA_LAZY")]

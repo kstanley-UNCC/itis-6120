@@ -4,6 +4,7 @@ namespace Itis6120\Project2\Entity;
 
 use Doctrine\ORM\Mapping\Column;
 use Doctrine\ORM\Mapping\Entity;
+use Doctrine\ORM\Mapping\GeneratedValue;
 use Doctrine\ORM\Mapping\Id;
 use Doctrine\ORM\Mapping\OneToMany;
 use Doctrine\ORM\Mapping\Table;
@@ -14,6 +15,7 @@ class StaffPosition
 {
     #[Column(name: "id", type: "integer")]
     #[Id]
+    #[GeneratedValue]
     private int $id;
 
     #[Column(name: "position_name", type: "string", length: 50, unique: true)]
