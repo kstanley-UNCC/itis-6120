@@ -1,6 +1,6 @@
 <?php
 
-namespace Itis6120\Project2\Doctrine\ORM\Query\AST\Functions;
+namespace Itis6120\Project2;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
 use Doctrine\ORM\Query\AST\Node;

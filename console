@@ -5,7 +5,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
 use Itis6120\Project2\ChoiceProcessor;
-use Itis6120\Project2\Doctrine\ORM\Query\AST\Functions\StafferAuthenticate;
+use Itis6120\Project2\StafferAuthenticate;
 use Itis6120\Project2\Entity\ViewStafferDetails;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
