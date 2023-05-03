@@ -1,4 +1,6 @@
 {
+    "name": "kstanley-uncc/project2",
+    "bin": ["console"],
     "description": "Advanced Features of an EMR Database System",
     "require": {
         "php": "^8.0.0",
