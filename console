@@ -6,6 +6,7 @@ use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
 use Itis6120\Project2\ChoiceProcessor;
 use Itis6120\Project2\Doctrine\ORM\Query\AST\Functions\StafferAuthenticate;
+use Itis6120\Project2\Entity\ViewStafferDetails;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
@@ -66,11 +67,54 @@ $application
             return Command::FAILURE;
         }
 
-        $section = $output->section();
-        $processor = new ChoiceProcessor(new EntityManager($connection, $config), $input, $section, $helper);
+        $body = $output->section();
+
+        $entityManager = new EntityManager($connection, $config);
+        $processor = new ChoiceProcessor($entityManager, $input, $body, $helper);
+
+        // Authenticate the user against the staffer table
+        $details = null;
+        $builder = $entityManager->createQueryBuilder()
+            ->select('staffer')
+            ->from(ViewStafferDetails::class, 'staffer')
+            ->andWhere(
+                'staffer.email = :email',
+                'staffer_authenticate(:email, :password) = TRUE'
+            );
+
+        while ($details === null) {
+            $body->writeln('<question>Welcome to Project 2 Systems, Inc.</question>');
+            $body->writeln('<info>Please login to continue.</info>');
+            $body->writeln('');
+
+            $email = $helper->ask($input, $body, new Question('Email: '));
+            $password = $helper->ask(
+                $input,
+                $body,
+                (new Question('Password: '))
+                    ->setHidden(true)
+            );
+
+            /** @var ViewStafferDetails|null $details */
+            $details = $builder
+                ->setParameter('email', $email)
+                ->setParameter('password', $password)
+                ->getQuery()
+                ->getOneOrNullResult();
+
+            if ($details === null) {
+                $helper->ask($input, $body, new Question('Invalid username/password. Press enter to continue...'));
+            }
+
+            $body->clear();
+        }
+
+        $output->writeln('<question>Welcome to Project 2 Systems, Inc.</question>');
+        $output->writeln(sprintf('Welcome back, <info>%s</info> (<comment>%s</comment>)!', $details->getName(), $details->getPosition()));
+        $output->writeln('');
 
         while (true) {
-            $section->clear();
+            $body->clear();
 
             // Present the user with their choices
             $prompt = new ChoiceQuestion('Please select from the following list of actions:', array_merge(
@@ -79,16 +123,16 @@ $application
             ));
             $prompt->setTrimmable(true);
 
-            $choice = $helper->ask($input, $section, $prompt);
+            $choice = $helper->ask($input, $body, $prompt);
 
             if ($choice === 'Exit') {
-                $section->clear();
-                $output->writeln('Goodbye!');
+                $body->clear();
+                $body->writeln('Goodbye!');
                 break;
             }
             $results = $processor->process($choice);
 
-            $table = new Table($section);
+            $table = new Table($body);
             $table
                 ->setHeaderTitle($choice)
                 ->setFooterTitle(sprintf('Total: %s', number_format($results['count'])))
@@ -105,7 +149,7 @@ $application
                 $table->setColumnMaxWidth($i, 80);
             }
 
-            $section->clear();
+            $body->clear();
             $table->render();
 
             $prompt = new Question('Press Enter to start over, or Q to quit...');
@@ -114,11 +158,11 @@ $application
                 ->setMultiline(false)
                 ->setHidden(true);
 
-            $response = $helper->ask($input, $section, $prompt);
+            $response = $helper->ask($input, $body, $prompt);
 
             if (strtolower((string)$response) === 'q') {
-                $section->clear();
-                $output->writeln('Goodbye!');
+                $body->clear();
+                $body->writeln('Goodbye!');
                 break;
             }
         }
