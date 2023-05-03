@@ -41,8 +41,8 @@ class PatientVisit extends AbstractEntity
     #[Column(name: "symptoms", type: "text")]
     private string $symptoms;
 
-    #[Column(name: "discharge", type: "text")]
-    private string $discharge;
+    #[Column(name: "discharge", type: "text", nullable: true)]
+    private ?string $discharge = null;
 
     public function __construct()
     {
@@ -106,9 +106,9 @@ class PatientVisit extends AbstractEntity
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getDischarge(): string
+    public function getDischarge(): ?string
     {
         return $this->discharge;
     }
@@ -184,10 +184,10 @@ class PatientVisit extends AbstractEntity
     }
 
     /**
-     * @param string $discharge
+     * @param string|null $discharge
      * @return $this
      */
-    public function setDischarge(string $discharge): static
+    public function setDischarge(?string $discharge): static
     {
         $this->discharge = $discharge;
         return $this;
