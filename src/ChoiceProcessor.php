@@ -20,7 +20,6 @@ final readonly class ChoiceProcessor
     private const CHOICE_DOCTOR = 'Patients by Doctor';
     private const CHOICE_FACILITY = 'Patients by Facility';
     private const CHOICE_NEW_PATIENT = 'Add New Patient';
-    private const CHOICE_NEW_STAFFER = 'Add New Staffer';
 
     public function __construct(
         public EntityManager $em,
@@ -37,7 +36,6 @@ final readonly class ChoiceProcessor
             self::CHOICE_FACILITY,
             self::CHOICE_DOCTOR,
             self::CHOICE_NEW_PATIENT,
-            self::CHOICE_NEW_STAFFER,
             self::CHOICE_ADMIT_PATIENT,
         ];
     }
@@ -56,8 +54,6 @@ final readonly class ChoiceProcessor
                 break;
             case self::CHOICE_NEW_PATIENT:
                 $processor = new InsertNewPatient($this);
-                break;
-            case self::CHOICE_NEW_STAFFER:
                 break;
             case self::CHOICE_ADMIT_PATIENT:
                 break;
