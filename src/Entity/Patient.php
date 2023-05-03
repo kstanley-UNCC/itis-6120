@@ -55,6 +55,11 @@ class Patient extends AbstractEntity
         $this->visits = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return sprintf('%s %s', $this->getFirstName(), $this->getLastName());
+    }
+
     /**
      * @param PatientVisit $visit
      * @return $this

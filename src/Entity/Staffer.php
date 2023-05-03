@@ -54,6 +54,11 @@ class Staffer extends AbstractEntity
         $this->visits = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return sprintf('%s %s', $this->getFirstName(), $this->getLastName());
+    }
+
     public function addVisit(PatientVisit $visit): static
     {
         if (!$this->visits->contains($visit)) {

@@ -58,6 +58,11 @@ class Facility extends AbstractEntity
         $this->visits = new ArrayCollection();
     }
 
+    public function __toString(): string
+    {
+        return $this->getName();
+    }
+
     /**
      * @param PatientVisit $visit
      * @return $this
