@@ -5,6 +5,7 @@ use Doctrine\DBAL\DriverManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMSetup;
 use Itis6120\Project2\ChoiceProcessor;
+use Itis6120\Project2\Doctrine\ORM\Query\AST\Functions\StafferAuthenticate;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Helper\Table;
 use Symfony\Component\Console\Helper\TableCell;
@@ -43,6 +44,8 @@ $application
         }
 
         $config = ORMSetup::createAttributeMetadataConfiguration(['./src/Entity'], true);
+        $config->addCustomStringFunction('staffer_authenticate', StafferAuthenticate::class);
+
         $connection = DriverManager::getConnection([
             'driver' => 'pdo_mysql',
             'user' => $input->getOption('username'),
