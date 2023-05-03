@@ -36,7 +36,7 @@ class PatientVisit extends AbstractEntity
     private DateTimeImmutable $dateCheckin;
 
     #[Column(name: "date_checkout", type: "datetime_immutable", nullable: true, options: ["default" => null])]
-    private DateTimeImmutable $dateCheckout;
+    private ?DateTimeImmutable $dateCheckout = null;
 
     #[Column(name: "symptoms", type: "text")]
     private string $symptoms;
@@ -90,9 +90,9 @@ class PatientVisit extends AbstractEntity
     }
 
     /**
-     * @return DateTimeImmutable
+     * @return DateTimeImmutable|null
      */
-    public function getDateCheckout(): DateTimeImmutable
+    public function getDateCheckout(): ?DateTimeImmutable
     {
         return $this->dateCheckout;
     }
