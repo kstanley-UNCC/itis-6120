@@ -6,7 +6,8 @@
         "symfony/orm-pack": "^2.3"
     },
     "require-dev": {
-        "roave/security-advisories": "dev-latest"
+        "roave/security-advisories": "dev-latest",
+        "clue/phar-composer": "^1.4"
     },
     "autoload": {
         "psr-4": {
