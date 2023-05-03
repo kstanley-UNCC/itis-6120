@@ -4,6 +4,7 @@ namespace Itis6120\Project2;
 
 use Doctrine\ORM\EntityManager;
 use Itis6120\Project2\Entity\AbstractEntity;
+use Itis6120\Project2\Processor\AdmitPatient;
 use Itis6120\Project2\Processor\AdmittedByDoctor;
 use Itis6120\Project2\Processor\AdmittedByFacility;
 use Itis6120\Project2\Processor\AdmittedToday;
@@ -56,6 +57,7 @@ final readonly class ChoiceProcessor
                 $processor = new InsertNewPatient($this);
                 break;
             case self::CHOICE_ADMIT_PATIENT:
+                $processor = new AdmitPatient($this);
                 break;
             default:
                 throw new UnexpectedValueException(sprintf('%s: Invalid choice selected', $choice));
