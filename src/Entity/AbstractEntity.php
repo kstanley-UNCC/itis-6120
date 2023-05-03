@@ -38,6 +38,8 @@ class AbstractEntity implements EntityInterface
                 $value = (string)$value;
             } else if (is_array($value) || $value instanceof Collection) {
                 return $results;
+            } else if (!$property->isInitialized($this)) {
+                return $results;
             }
 
             $results[$property->getName()] = $value;
